@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Spannungsteiler – korrektes Schaltbild</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #eef6fb;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* LINKS */
+.controls {
+    width: 30%;
+    background: white;
+    padding: 35px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+/* RECHTS */
+.visual {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+svg {
+    width: 95%;
+}
+
+.value {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.label {
+    font-size: 14px;
+    fill: red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LINKS -->
+<div class="controls">
+
+<h2>Spannungsteiler</h2>
+
+<p>Uin = <b>10 V</b></p>
+
+<p>R1</p>
+<input type="range" min="0" max="10" step="1" value="3" id="r1" style="width:100%;">
+
+<p>R2</p>
+<input type="range" min="0" max="10" step="1" value="3" id="r2" style="width:100%;">
+
+<div class="value">R1: <b><span id="r1Val"></span> Ω</b></div>
+<div class="value">R2: <b><span id="r2Val"></span> Ω</b></div>
+
+<hr>
+
+<div class="value">U1: <b><span id="u1"></span> V</b></div>
+<div class="value">U2: <b><span id="u2"></span> V</b></div>
+
+</div>
+
+<!-- RECHTS -->
+<div class="visual">
+
+<svg viewBox="0 0 800 300">
+
+<!-- ⚡ SPANNUNGSPFEIL (nur unten Spitze) -->
+<line x1="100" y1="90" x2="100" y2="230" stroke="black" stroke-width="3"/>
+<polygon points="100,240 92,225 108,225" fill="black"/>
+<text x="60" y="160">Uin = 10V</text>
+
+<!-- obere Leitung -->
+<line x1="100" y1="90" x2="300" y2="90" stroke="black" stroke-width="3"/>
+
+<!-- R1 -->
+<rect x="300" y="70" width="120" height="40" fill="none" stroke="black" stroke-width="3"/>
+<text x="345" y="95">R1</text>
+
+<!-- Knoten -->
+<line x1="420" y1="90" x2="450" y2="90" stroke="black" stroke-width="3"/>
+<circle cx="450" cy="90" r="4" fill="black"/>
+
+<!-- R2 -->
+<rect x="450" y="70" width="120" height="40" fill="none" stroke="black" stroke-width="3"/>
+<text x="495" y="95">R2</text>
+
+<!-- Rückleitung -->
+<line x1="570" y1="90" x2="700" y2="90" stroke="black" stroke-width="3"/>
+<line x1="700" y1="90" x2="700" y2="240" stroke="black" stroke-width="3"/>
+<line x1="700" y1="240" x2="100" y2="240" stroke="black" stroke-width="3"/>
+<line x1="100" y1="240" x2="100" y2="90" stroke="black" stroke-width="3"/>
+
+<!-- Spannungslabels -->
+<text id="u1Label" x="320" y="60" class="label"></text>
+<text id="u2Label" x="470" y="60" class="label"></text>
+
+</svg>
+
+</div>
+
+</div>
+
+<script>
+
+const r1 = document.getElementById("r1");
+const r2 = document.getElementById("r2");
+
+const r1Val = document.getElementById("r1Val");
+const r2Val = document.getElementById("r2Val");
+
+const u1 = document.getElementById("u1");
+const u2 = document.getElementById("u2");
+
+const u1Label = document.getElementById("u1Label");
+const u2Label = document.getElementById("u2Label");
+
+const Uin = 10;
+
+function update() {
+
+    let R1 = parseInt(r1.value);
+    let R2 = parseInt(r2.value);
+
+    let total = R1 + R2;
+    if (total === 0) total = 1;
+
+    let U1 = Uin * (R1 / total);
+    let U2 = Uin * (R2 / total);
+
+    r1Val.innerText = R1;
+    r2Val.innerText = R2;
+
+    u1.innerText = U1.toFixed(2);
+    u2.innerText = U2.toFixed(2);
+
+    u1Label.textContent = `U1 = ${U1.toFixed(2)} V`;
+    u2Label.textContent = `U2 = ${U2.toFixed(2)} V`;
+}
+
+r1.oninput = update;
+r2.oninput = update;
+
+update();
+
+</script>
+
+</body>
+</html>
