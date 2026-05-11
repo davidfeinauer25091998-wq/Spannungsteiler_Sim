@@ -19,13 +19,14 @@ body {
 }
 
 /* ===================== */
-/* OBEN: SCHALTUNG       */
+/* SCHALTUNG             */
 /* ===================== */
 .visual {
     height: 45%;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: -10px;
 }
 
 svg {
@@ -34,50 +35,52 @@ svg {
     height: auto;
 }
 
-/* kleinere rote Spannungslabels */
+/* Spannungslabels */
 .label {
-    font-size: 14px;   /* deutlich kleiner als vorher */
+    font-size: 14px;
     fill: red;
 }
 
+/* Batterie-Polung */
+.polarity {
+    font-size: 16px;
+    fill: black;
+    font-weight: bold;
+}
+
 /* ===================== */
-/* UNTEN: CONTROLS       */
+/* CONTROLS              */
 /* ===================== */
 .controls {
     height: 55%;
     background: white;
-    padding: 12px;            /* kompakter */
+    padding: 10px;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     font-size: 20px;
 }
 
-/* weniger Abstand zwischen Elementen */
-.controls p {
-    margin: 6px 0 4px 0;
-}
-
 h2 {
-    margin: 6px 0 8px 0;
+    margin: 4px 0 6px 0;
     font-size: 22px;
 }
 
-/* Slider kompakter */
-input[type="range"] {
-    width: 100%;
-    margin: 2px 0 6px 0;
+p {
+    margin: 4px 0;
 }
 
-/* Werte kompakter */
+input[type="range"] {
+    width: 100%;
+    margin: 2px 0 4px 0;
+}
+
 .value {
-    margin: 4px 0;
+    margin: 3px 0;
     font-size: 20px;
 }
 
-/* Trennlinie kleiner Abstand */
 hr {
-    margin: 8px 0;
+    margin: 6px 0;
 }
-
 </style>
 </head>
 
@@ -90,12 +93,17 @@ hr {
 <!-- ===================== -->
 <div class="visual">
 
-<svg viewBox="0 0 400 220">
+<!-- WICHTIG: erweiterter ViewBox nach links -->
+<svg viewBox="-20 0 420 220">
 
 <!-- Spannungspfeil -->
 <line x1="20" y1="60" x2="20" y2="160" stroke="black" stroke-width="2"/>
 <polygon points="20,160 14,150 26,150" fill="black"/>
-<text x="0" y="45" font-size="18">Uin</text>
+
+<!-- U_in sauber sichtbar links neben Pfeil -->
+<text x="12" y="110" text-anchor="end" font-size="18">
+    U<tspan baseline-shift="sub" font-size="12">in</tspan>
+</text>
 
 <!-- Batterie -->
 <line x1="60" y1="60" x2="60" y2="95" stroke="black" stroke-width="3"/>
@@ -103,20 +111,28 @@ hr {
 <line x1="55" y1="110" x2="65" y2="110" stroke="black" stroke-width="2"/>
 <line x1="60" y1="110" x2="60" y2="170" stroke="black" stroke-width="3"/>
 
+<!-- + / - direkt an Batterie -->
+<text x="72" y="98" class="polarity">+</text>
+<text x="72" y="114" class="polarity">−</text>
+
 <!-- obere Leitung -->
 <line x1="60" y1="60" x2="140" y2="60" stroke="black" stroke-width="3"/>
 
-<!-- R1 -->
+<!-- R₁ -->
 <rect x="140" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
-<text x="150" y="65" font-size="20">R1</text>
+<text x="150" y="65" font-size="20">
+    R<tspan baseline-shift="sub" font-size="14">1</tspan>
+</text>
 
 <!-- Knoten -->
 <line x1="200" y1="60" x2="220" y2="60" stroke="black" stroke-width="3"/>
 <circle cx="220" cy="60" r="3" fill="black"/>
 
-<!-- R2 -->
+<!-- R₂ -->
 <rect x="220" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
-<text x="230" y="65" font-size="20">R2</text>
+<text x="230" y="65" font-size="20">
+    R<tspan baseline-shift="sub" font-size="14">2</tspan>
+</text>
 
 <!-- Rückleitung -->
 <line x1="280" y1="60" x2="320" y2="60" stroke="black" stroke-width="3"/>
@@ -124,36 +140,46 @@ hr {
 <line x1="320" y1="170" x2="60" y2="170" stroke="black" stroke-width="3"/>
 <line x1="60" y1="170" x2="60" y2="110" stroke="black" stroke-width="3"/>
 
-<!-- Spannungslabels (kleiner) -->
-<text id="u1Label" x="145" y="35" class="label"></text>
-<text id="u2Label" x="225" y="35" class="label"></text>
+<!-- Spannungslabels unter Widerständen -->
+<text id="u1Label" x="170" y="95" text-anchor="middle" class="label"></text>
+<text id="u2Label" x="250" y="95" text-anchor="middle" class="label"></text>
 
 </svg>
 
 </div>
 
 <!-- ===================== -->
-<!-- CONTROLS (kompakt)   -->
+<!-- CONTROLS             -->
 <!-- ===================== -->
 <div class="controls">
 
 <h2>Spannungsteiler</h2>
 
-<p>Uin = <b>10 V</b></p>
+<p>U<tspan style="font-size:12px; vertical-align: sub;">in</tspan> = <b>10 V</b></p>
 
-<p>R1</p>
+<p>R₁</p>
 <input type="range" min="0" max="10" step="1" value="3" id="r1">
 
-<p>R2</p>
+<p>R₂</p>
 <input type="range" min="0" max="10" step="1" value="3" id="r2">
 
-<div class="value">R1: <b><span id="r1Val"></span> Ω</b></div>
-<div class="value">R2: <b><span id="r2Val"></span> Ω</b></div>
+<div class="value">
+R₁: <b><span id="r1Val"></span> Ω</b>
+</div>
+
+<div class="value">
+R₂: <b><span id="r2Val"></span> Ω</b>
+</div>
 
 <hr>
 
-<div class="value">U1: <b><span id="u1"></span> V</b></div>
-<div class="value">U2: <b><span id="u2"></span> V</b></div>
+<div class="value">
+U₁: <b><span id="u1"></span> V</b>
+</div>
+
+<div class="value">
+U₂: <b><span id="u2"></span> V</b>
+</div>
 
 </div>
 
@@ -192,8 +218,8 @@ function update() {
     u1.innerText = U1.toFixed(2);
     u2.innerText = U2.toFixed(2);
 
-    u1Label.textContent = `U1 = ${U1.toFixed(2)} V`;
-    u2Label.textContent = `U2 = ${U2.toFixed(2)} V`;
+    u1Label.textContent = `U₁ = ${U1.toFixed(2)} V`;
+    u2Label.textContent = `U₂ = ${U2.toFixed(2)} V`;
 }
 
 r1.oninput = update;
