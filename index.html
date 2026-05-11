@@ -35,13 +35,12 @@ svg {
     height: auto;
 }
 
-/* Spannungslabels */
+/* Labels */
 .label {
     font-size: 14px;
     fill: red;
 }
 
-/* Batterie-Polung */
 .polarity {
     font-size: 16px;
     fill: black;
@@ -78,6 +77,24 @@ input[type="range"] {
     font-size: 20px;
 }
 
+/* 🔲 Verhältnis-Box */
+.box {
+    display: inline-block;
+    margin-left: 12px;
+    padding: 4px 8px;
+    border: 2px solid #333;
+    border-radius: 6px;
+    background: #f7f7f7;
+    font-size: 18px;
+}
+
+/* Abstand zwischen Blöcken */
+.block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 hr {
     margin: 6px 0;
 }
@@ -93,14 +110,13 @@ hr {
 <!-- ===================== -->
 <div class="visual">
 
-<!-- WICHTIG: erweiterter ViewBox nach links -->
 <svg viewBox="-20 0 420 220">
 
 <!-- Spannungspfeil -->
 <line x1="20" y1="60" x2="20" y2="160" stroke="black" stroke-width="2"/>
 <polygon points="20,160 14,150 26,150" fill="black"/>
 
-<!-- U_in sauber sichtbar links neben Pfeil -->
+<!-- U_in -->
 <text x="12" y="110" text-anchor="end" font-size="18">
     U<tspan baseline-shift="sub" font-size="12">in</tspan>
 </text>
@@ -111,14 +127,14 @@ hr {
 <line x1="55" y1="110" x2="65" y2="110" stroke="black" stroke-width="2"/>
 <line x1="60" y1="110" x2="60" y2="170" stroke="black" stroke-width="3"/>
 
-<!-- + / - direkt an Batterie -->
+<!-- + / - -->
 <text x="72" y="98" class="polarity">+</text>
 <text x="72" y="114" class="polarity">−</text>
 
-<!-- obere Leitung -->
+<!-- Leitung -->
 <line x1="60" y1="60" x2="140" y2="60" stroke="black" stroke-width="3"/>
 
-<!-- R₁ -->
+<!-- R1 -->
 <rect x="140" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
 <text x="150" y="65" font-size="20">
     R<tspan baseline-shift="sub" font-size="14">1</tspan>
@@ -128,7 +144,7 @@ hr {
 <line x1="200" y1="60" x2="220" y2="60" stroke="black" stroke-width="3"/>
 <circle cx="220" cy="60" r="3" fill="black"/>
 
-<!-- R₂ -->
+<!-- R2 -->
 <rect x="220" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
 <text x="230" y="65" font-size="20">
     R<tspan baseline-shift="sub" font-size="14">2</tspan>
@@ -140,7 +156,7 @@ hr {
 <line x1="320" y1="170" x2="60" y2="170" stroke="black" stroke-width="3"/>
 <line x1="60" y1="170" x2="60" y2="110" stroke="black" stroke-width="3"/>
 
-<!-- Spannungslabels unter Widerständen -->
+<!-- U1 / U2 -->
 <text id="u1Label" x="170" y="95" text-anchor="middle" class="label"></text>
 <text id="u2Label" x="250" y="95" text-anchor="middle" class="label"></text>
 
@@ -163,22 +179,26 @@ hr {
 <p>R₂</p>
 <input type="range" min="0" max="10" step="1" value="3" id="r2">
 
-<div class="value">
-R₁: <b><span id="r1Val"></span> Ω</b>
-</div>
-
-<div class="value">
-R₂: <b><span id="r2Val"></span> Ω</b>
+<div class="block">
+    <div class="value">
+        R₁: <b><span id="r1Val"></span> Ω</b><br>
+        R₂: <b><span id="r2Val"></span> Ω</b>
+    </div>
+    <div class="box">
+        R₁/R₂ = <span id="rRatio"></span>
+    </div>
 </div>
 
 <hr>
 
-<div class="value">
-U₁: <b><span id="u1"></span> V</b>
-</div>
-
-<div class="value">
-U₂: <b><span id="u2"></span> V</b>
+<div class="block">
+    <div class="value">
+        U₁: <b><span id="u1"></span> V</b><br>
+        U₂: <b><span id="u2"></span> V</b>
+    </div>
+    <div class="box">
+        U₁/U₂ = <span id="uRatio"></span>
+    </div>
 </div>
 
 </div>
@@ -198,6 +218,9 @@ const u2 = document.getElementById("u2");
 
 const u1Label = document.getElementById("u1Label");
 const u2Label = document.getElementById("u2Label");
+
+const rRatio = document.getElementById("rRatio");
+const uRatio = document.getElementById("uRatio");
 
 const Uin = 10;
 
@@ -220,6 +243,9 @@ function update() {
 
     u1Label.textContent = `U₁ = ${U1.toFixed(2)} V`;
     u2Label.textContent = `U₂ = ${U2.toFixed(2)} V`;
+
+    rRatio.innerText = (R2 === 0 ? "∞" : (R1 / R2).toFixed(2));
+    uRatio.innerText = (U2 === 0 ? "∞" : (U1 / U2).toFixed(2));
 }
 
 r1.oninput = update;
