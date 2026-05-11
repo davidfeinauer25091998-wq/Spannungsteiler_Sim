@@ -9,7 +9,7 @@ body {
     margin: 0;
     font-family: Arial;
     background: #eef6fb;
-    font-size: 20px; /* +4pt (~16px → ~20px) */
+    font-size: 24px;
 }
 
 .container {
@@ -29,13 +29,8 @@ body {
 /* SVG responsiv */
 svg {
     width: 100%;
-    max-width: 800px;   /* größer für breite Screens */
+    max-width: 900px;
     height: auto;
-}
-
-/* SVG Text +4pt */
-svg text {
-    font-size: 16px; /* vorher ~12px → +4pt */
 }
 
 /* UNTEN: CONTROLS */
@@ -44,23 +39,23 @@ svg text {
     background: white;
     padding: 20px;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    font-size: 20px; /* konsistent größer */
+    font-size: 24px;
 }
 
 .value {
     margin-top: 10px;
-    font-size: 20px;
-}
-
-.label {
-    font-size: 16px; /* vorher 12px → +4pt */
-    fill: red;
+    font-size: 24px;
 }
 
 input[type="range"] {
     width: 100%;
 }
 
+/* rote Spannungslabels */
+.label {
+    font-size: 22px;
+    fill: red;
+}
 </style>
 </head>
 
@@ -68,36 +63,45 @@ input[type="range"] {
 
 <div class="container">
 
-<!-- OBEN -->
+<!-- OBEN: SCHALTUNG -->
 <div class="visual">
 
 <svg viewBox="0 0 400 220">
 
+<!-- Spannungspfeil -->
 <line x1="20" y1="60" x2="20" y2="160" stroke="black" stroke-width="2"/>
 <polygon points="20,160 14,150 26,150" fill="black"/>
-<text x="5" y="50">Uin</text>
 
+<text x="0" y="45" font-size="20">Uin</text>
+
+<!-- Batterie -->
 <line x1="60" y1="60" x2="60" y2="95" stroke="black" stroke-width="3"/>
 <line x1="50" y1="95" x2="70" y2="95" stroke="black" stroke-width="4"/>
 <line x1="55" y1="110" x2="65" y2="110" stroke="black" stroke-width="2"/>
 <line x1="60" y1="110" x2="60" y2="170" stroke="black" stroke-width="3"/>
 
+<!-- obere Leitung -->
 <line x1="60" y1="60" x2="140" y2="60" stroke="black" stroke-width="3"/>
 
+<!-- R1 -->
 <rect x="140" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
-<text x="160" y="65">R1</text>
+<text x="150" y="65" font-size="22">R1</text>
 
+<!-- Knoten -->
 <line x1="200" y1="60" x2="220" y2="60" stroke="black" stroke-width="3"/>
 <circle cx="220" cy="60" r="3" fill="black"/>
 
+<!-- R2 -->
 <rect x="220" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
-<text x="240" y="65">R2</text>
+<text x="230" y="65" font-size="22">R2</text>
 
+<!-- Rückleitung -->
 <line x1="280" y1="60" x2="320" y2="60" stroke="black" stroke-width="3"/>
 <line x1="320" y1="60" x2="320" y2="170" stroke="black" stroke-width="3"/>
 <line x1="320" y1="170" x2="60" y2="170" stroke="black" stroke-width="3"/>
 <line x1="60" y1="170" x2="60" y2="110" stroke="black" stroke-width="3"/>
 
+<!-- Spannungslabels (dynamisch) -->
 <text id="u1Label" x="145" y="35" class="label"></text>
 <text id="u2Label" x="225" y="35" class="label"></text>
 
