@@ -2,258 +2,329 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Spannungsteiler – kompakt</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Reihenschaltung</title>
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #eef6fb;
-    font-size: 22px;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.container {
+  :root {
+    --bg:      #0d0f14;
+    --surface: #151820;
+    --border:  #232736;
+    --accent:  #4af0c0;
+    --wire:    #c8d8f0;
+    --label:   #8899bb;
+    --text:    #dde6f5;
+    --u1:      #f0d060;
+    --u2:      #f08040;
+    --mono:    'IBM Plex Mono', monospace;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  body {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-}
-
-/* ===================== */
-/* SCHALTUNG             */
-/* ===================== */
-.visual {
-    height: 45%;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    margin-bottom: -10px;
-}
+    padding: 10px 10px 12px;
+    gap: 10px;
+    min-height: 100%;
+  }
 
-svg {
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  header h1 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  header span {
+    font-size: 0.62rem;
+    color: var(--label);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  /* ── Circuit card ── */
+  .circuit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 8px 6px;
     width: 100%;
-    max-width: 900px;
+    max-width: 420px;
+  }
+
+  svg#circuit {
+    display: block;
+    width: 100%;
     height: auto;
-}
+    overflow: visible;
+  }
 
-/* Labels */
-.label {
-    font-size: 14px;
-    fill: red;
-}
+  /* SVG classes */
+  .wire      { stroke: var(--wire); stroke-width: 2; fill: none; stroke-linecap: square; }
+  .comp-body { fill: none; stroke: var(--wire); stroke-width: 2; }
+  .lbl       { font-family: var(--mono); font-size: 12px; fill: var(--accent); font-weight: 600; }
+  .sub       { font-family: var(--mono); font-size: 10px; fill: var(--label); }
+  .node-dot  { fill: var(--wire); }
+  .v1t       { font-family: var(--mono); font-size: 11px; fill: var(--u1); font-weight: 600; }
+  .v2t       { font-family: var(--mono); font-size: 11px; fill: var(--u2); font-weight: 600; }
+  .batt-long  { stroke: var(--wire); stroke-width: 3;   stroke-linecap: round; fill: none; }
+  .batt-short { stroke: var(--wire); stroke-width: 1.5; stroke-linecap: round; fill: none; }
 
-.polarity {
-    font-size: 16px;
-    fill: black;
-    font-weight: bold;
-}
-
-/* ===================== */
-/* CONTROLS              */
-/* ===================== */
-.controls {
-    height: 55%;
-    background: white;
-    padding: 10px;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    font-size: 20px;
-}
-
-h2 {
-    margin: 4px 0 6px 0;
-    font-size: 22px;
-}
-
-p {
-    margin: 4px 0;
-}
-
-input[type="range"] {
+  /* ── Sliders ── */
+  .sliders {
     width: 100%;
-    margin: 2px 0 4px 0;
-}
-
-.value {
-    margin: 3px 0;
-    font-size: 20px;
-}
-
-/* 🔲 Verhältnis-Box */
-.box {
-    display: inline-block;
-    margin-left: 12px;
-    padding: 4px 8px;
-    border: 2px solid #333;
-    border-radius: 6px;
-    background: #f7f7f7;
-    font-size: 18px;
-}
-
-/* Abstand zwischen Blöcken */
-.block {
+    max-width: 420px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+    flex-direction: column;
+    gap: 8px;
+  }
 
-hr {
-    margin: 6px 0;
-}
+  .slider-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px 6px;
+  }
+
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .sname { font-size: 0.8rem; color: var(--accent); }
+  .sval  { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  .sunit { font-size: 0.68rem; color: var(--label); }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%; height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    outline: none; cursor: pointer;
+    margin-bottom: 4px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 6px rgba(74,240,192,0.5);
+    cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    cursor: pointer;
+  }
+
+  .tick-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+  }
+  .tick { font-size: 0.6rem; color: var(--label); }
+
+  /* ── Summary grid: 3 columns × 2 rows ── */
+  .summary {
+    width: 100%;
+    max-width: 420px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .si {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 8px;
+    text-align: center;
+  }
+  .si-label { font-size: 0.58rem; color: var(--label); letter-spacing: 0.08em; text-transform: uppercase; }
+  .si-val   { font-size: 1rem; font-weight: 600; margin-top: 2px; }
+  .cg  { color: var(--accent); }
+  .cu1 { color: var(--u1); }
+  .cu2 { color: var(--u2); }
+  .crat{ color: var(--accent); font-size: 0.85rem !important; }
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<header>
+  <h1>Reihenschaltung</h1>
+  <span>IEC 60617</span>
+</header>
 
-<!-- ===================== -->
-<!-- SCHALTUNG             -->
-<!-- ===================== -->
-<div class="visual">
+<!-- ── Circuit ── -->
+<div class="circuit-card">
+  <!--
+    viewBox 400 × 190
+    Top rail y=40, Bot rail y=160
+    Left x=55 (battery), Right x=370
+    R1: x=110..190, R2: x=220..300
+  -->
+  <svg id="circuit" viewBox="0 0 400 195" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto">
+        <path d="M0,0 L0,5 L7,2.5 z" fill="#4af0c0" opacity="0.7"/>
+      </marker>
+    </defs>
 
-<svg viewBox="-20 0 420 220">
+    <!-- ══ WIRES ══ -->
+    <line class="wire" x1="55"  y1="40"  x2="110" y2="40"/>
+    <line class="wire" x1="190" y1="40"  x2="220" y2="40"/>
+    <line class="wire" x1="300" y1="40"  x2="370" y2="40"/>
+    <line class="wire" x1="370" y1="40"  x2="370" y2="160"/>
+    <line class="wire" x1="55"  y1="160" x2="370" y2="160"/>
+    <line class="wire" x1="55"  y1="40"  x2="55"  y2="78"/>
+    <line class="wire" x1="55"  y1="102" x2="55"  y2="160"/>
 
-<!-- Spannungspfeil -->
-<line x1="20" y1="60" x2="20" y2="160" stroke="black" stroke-width="2"/>
-<polygon points="20,160 14,150 26,150" fill="black"/>
+    <!-- ══ BATTERY – IEC single cell ══ -->
+    <!-- Long bar = + (top) -->
+    <line class="batt-long"  x1="30" y1="78"  x2="80" y2="78"/>
+    <!-- Short bar = − (bottom) -->
+    <line class="batt-short" x1="38" y1="102" x2="72" y2="102"/>
 
-<!-- U_in -->
-<text x="12" y="110" text-anchor="end" font-size="18">
-    U<tspan baseline-shift="sub" font-size="12">in</tspan>
-</text>
+    <!-- +/− labels -->
+    <text x="84" y="82"  font-family="IBM Plex Mono,monospace" font-size="12" fill="#4af0c0">+</text>
+    <text x="84" y="107" font-family="IBM Plex Mono,monospace" font-size="12" fill="#8899bb">−</text>
 
-<!-- Batterie -->
-<line x1="60" y1="60" x2="60" y2="95" stroke="black" stroke-width="3"/>
-<line x1="50" y1="95" x2="70" y2="95" stroke="black" stroke-width="4"/>
-<line x1="55" y1="110" x2="65" y2="110" stroke="black" stroke-width="2"/>
-<line x1="60" y1="110" x2="60" y2="170" stroke="black" stroke-width="3"/>
+    <!-- Uin annotation -->
+    <text class="lbl" x="18" y="87"  text-anchor="middle">U</text>
+    <text class="sub" x="18" y="98"  text-anchor="middle">in</text>
+    <text font-family="IBM Plex Mono,monospace" font-size="10" fill="#c8d8f0" font-weight="600"
+          x="18" y="110" text-anchor="middle">10 V</text>
 
-<!-- + / - -->
-<text x="72" y="98" class="polarity">+</text>
-<text x="72" y="114" class="polarity">−</text>
+    <!-- ══ R1 ══ -->
+    <rect class="comp-body" x="110" y="27" width="80" height="26"/>
+    <text class="lbl" x="150" y="20" text-anchor="middle">R₁</text>
+    <text id="v1-svg" class="v1t" x="150" y="68" text-anchor="middle">—</text>
+    <text class="sub"             x="150" y="79" text-anchor="middle">U₁</text>
 
-<!-- Leitung -->
-<line x1="60" y1="60" x2="140" y2="60" stroke="black" stroke-width="3"/>
+    <!-- ══ R2 ══ -->
+    <rect class="comp-body" x="220" y="27" width="80" height="26"/>
+    <text class="lbl" x="260" y="20" text-anchor="middle">R₂</text>
+    <text id="v2-svg" class="v2t" x="260" y="68" text-anchor="middle">—</text>
+    <text class="sub"             x="260" y="79" text-anchor="middle">U₂</text>
 
-<!-- R1 -->
-<rect x="140" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
-<text x="150" y="65" font-size="20">
-    R<tspan baseline-shift="sub" font-size="14">1</tspan>
-</text>
+    <!-- ══ Current arrow ══ -->
+    <line x1="300" y1="160" x2="230" y2="160"
+          stroke="#4af0c0" stroke-width="1.5" stroke-dasharray="4 3"
+          marker-end="url(#arr)" opacity="0.55"/>
+    <text x="265" y="175" text-anchor="middle"
+          font-family="IBM Plex Mono,monospace" font-size="10"
+          fill="#4af0c0" opacity="0.65">I</text>
 
-<!-- Knoten -->
-<line x1="200" y1="60" x2="220" y2="60" stroke="black" stroke-width="3"/>
-<circle cx="220" cy="60" r="3" fill="black"/>
-
-<!-- R2 -->
-<rect x="220" y="45" width="60" height="30" fill="none" stroke="black" stroke-width="3"/>
-<text x="230" y="65" font-size="20">
-    R<tspan baseline-shift="sub" font-size="14">2</tspan>
-</text>
-
-<!-- Rückleitung -->
-<line x1="280" y1="60" x2="320" y2="60" stroke="black" stroke-width="3"/>
-<line x1="320" y1="60" x2="320" y2="170" stroke="black" stroke-width="3"/>
-<line x1="320" y1="170" x2="60" y2="170" stroke="black" stroke-width="3"/>
-<line x1="60" y1="170" x2="60" y2="110" stroke="black" stroke-width="3"/>
-
-<!-- U1 / U2 -->
-<text id="u1Label" x="170" y="95" text-anchor="middle" class="label"></text>
-<text id="u2Label" x="250" y="95" text-anchor="middle" class="label"></text>
-
-</svg>
-
+    <!-- Corners -->
+    <circle class="node-dot" cx="55"  cy="40"  r="3"/>
+    <circle class="node-dot" cx="370" cy="40"  r="3"/>
+    <circle class="node-dot" cx="370" cy="160" r="3"/>
+    <circle class="node-dot" cx="55"  cy="160" r="3"/>
+  </svg>
 </div>
 
-<!-- ===================== -->
-<!-- CONTROLS             -->
-<!-- ===================== -->
-<div class="controls">
-
-<h2>Spannungsteiler</h2>
-
-<p>U<tspan style="font-size:12px; vertical-align: sub;">in</tspan> = <b>10 V</b></p>
-
-<p>R₁</p>
-<input type="range" min="0" max="10" step="1" value="3" id="r1">
-
-<p>R₂</p>
-<input type="range" min="0" max="10" step="1" value="3" id="r2">
-
-<div class="block">
-    <div class="value">
-        R₁: <b><span id="r1Val"></span> Ω</b><br>
-        R₂: <b><span id="r2Val"></span> Ω</b>
+<!-- ── Sliders ── -->
+<div class="sliders">
+  <div class="slider-block">
+    <div class="slider-header">
+      <span class="sname">R₁</span>
+      <span><span id="r1-val" class="sval">5</span><span class="sunit"> Ω</span></span>
     </div>
-    <div class="box">
-        R₁/R₂ = <span id="rRatio"></span>
+    <input type="range" id="slider-r1" min="0" max="10" step="1" value="5">
+    <div class="tick-row">
+      <span class="tick">0</span><span class="tick">1</span><span class="tick">2</span>
+      <span class="tick">3</span><span class="tick">4</span><span class="tick">5</span>
+      <span class="tick">6</span><span class="tick">7</span><span class="tick">8</span>
+      <span class="tick">9</span><span class="tick">10</span>
     </div>
+  </div>
+  <div class="slider-block">
+    <div class="slider-header">
+      <span class="sname">R₂</span>
+      <span><span id="r2-val" class="sval">4</span><span class="sunit"> Ω</span></span>
+    </div>
+    <input type="range" id="slider-r2" min="0" max="10" step="1" value="4">
+    <div class="tick-row">
+      <span class="tick">0</span><span class="tick">1</span><span class="tick">2</span>
+      <span class="tick">3</span><span class="tick">4</span><span class="tick">5</span>
+      <span class="tick">6</span><span class="tick">7</span><span class="tick">8</span>
+      <span class="tick">9</span><span class="tick">10</span>
+    </div>
+  </div>
 </div>
 
-<hr>
-
-<div class="block">
-    <div class="value">
-        U₁: <b><span id="u1"></span> V</b><br>
-        U₂: <b><span id="u2"></span> V</b>
-    </div>
-    <div class="box">
-        U₁/U₂ = <span id="uRatio"></span>
-    </div>
-</div>
-
-</div>
-
+<!-- ── Summary 3×2 ── -->
+<div class="summary">
+  <div class="si"><div class="si-label">R ges</div><div id="sum-r"  class="si-val cg">—</div></div>
+  <div class="si"><div class="si-label">Strom I</div><div id="sum-i"  class="si-val cg">—</div></div>
+  <div class="si"><div class="si-label">R₁ / R₂</div><div id="sum-rr" class="si-val crat">—</div></div>
+  <div class="si"><div class="si-label">U₁</div><div id="sum-u1" class="si-val cu1">—</div></div>
+  <div class="si"><div class="si-label">U₂</div><div id="sum-u2" class="si-val cu2">—</div></div>
+  <div class="si"><div class="si-label">U₁ / U₂</div><div id="sum-ur" class="si-val crat">—</div></div>
 </div>
 
 <script>
+  const UB = 10;
+  const s1 = document.getElementById('slider-r1');
+  const s2 = document.getElementById('slider-r2');
 
-const r1 = document.getElementById("r1");
-const r2 = document.getElementById("r2");
+  function fmt(v, d=2) { return Number(v).toFixed(d); }
+  function gcd(a,b) { return b===0?a:gcd(b,a%b); }
+  function frac(a,b) {
+    if(a===0&&b===0) return '—';
+    if(b===0) return '∞';
+    if(a===0) return '0';
+    const g=gcd(a,b), na=a/g, nb=b/g;
+    return nb===1?`${na}`:`${na}:${nb}`;
+  }
 
-const r1Val = document.getElementById("r1Val");
-const r2Val = document.getElementById("r2Val");
+  function update() {
+    const R1=+s1.value, R2=+s2.value, Rg=R1+R2;
+    document.getElementById('r1-val').textContent = R1;
+    document.getElementById('r2-val').textContent = R2;
+    document.getElementById('sum-r').textContent  = Rg+' Ω';
+    document.getElementById('sum-rr').textContent = frac(R1,R2);
 
-const u1 = document.getElementById("u1");
-const u2 = document.getElementById("u2");
+    if(Rg===0){
+      ['v1-svg','v2-svg'].forEach(id=>document.getElementById(id).textContent='0.00 V');
+      document.getElementById('sum-i').textContent='∞ A';
+      document.getElementById('sum-u1').textContent='0.00 V';
+      document.getElementById('sum-u2').textContent='0.00 V';
+      document.getElementById('sum-ur').textContent='—';
+      return;
+    }
+    const I=UB/Rg, U1=I*R1, U2=I*R2;
+    document.getElementById('v1-svg').textContent = fmt(U1)+' V';
+    document.getElementById('v2-svg').textContent = fmt(U2)+' V';
+    document.getElementById('sum-i').textContent  = fmt(I,3)+' A';
+    document.getElementById('sum-u1').textContent = fmt(U1)+' V';
+    document.getElementById('sum-u2').textContent = fmt(U2)+' V';
+    document.getElementById('sum-ur').textContent = frac(R1,R2);
+  }
 
-const u1Label = document.getElementById("u1Label");
-const u2Label = document.getElementById("u2Label");
-
-const rRatio = document.getElementById("rRatio");
-const uRatio = document.getElementById("uRatio");
-
-const Uin = 10;
-
-function update() {
-
-    let R1 = parseInt(r1.value);
-    let R2 = parseInt(r2.value);
-
-    let total = R1 + R2;
-    if (total === 0) total = 1;
-
-    let U1 = Uin * (R1 / total);
-    let U2 = Uin * (R2 / total);
-
-    r1Val.innerText = R1;
-    r2Val.innerText = R2;
-
-    u1.innerText = U1.toFixed(2);
-    u2.innerText = U2.toFixed(2);
-
-    u1Label.textContent = `U₁ = ${U1.toFixed(2)} V`;
-    u2Label.textContent = `U₂ = ${U2.toFixed(2)} V`;
-
-    rRatio.innerText = (R2 === 0 ? "∞" : (R1 / R2).toFixed(2));
-    uRatio.innerText = (U2 === 0 ? "∞" : (U1 / U2).toFixed(2));
-}
-
-r1.oninput = update;
-r2.oninput = update;
-
-update();
-
+  s1.addEventListener('input', update);
+  s2.addEventListener('input', update);
+  update();
 </script>
-
 </body>
 </html>
